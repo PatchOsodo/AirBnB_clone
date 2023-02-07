@@ -1,39 +1,59 @@
 #!/usr/bin/python3
-"""Unittest for test file: class and methods"""
-
-import pep8
+"""Unit tests for the `city` module.
+"""
+import os
 import unittest
-from models import city
+from models.engine.file_storage import FileStorage
+from models import storage
 from models.city import City
+from datetime import datetime
+
+c1 = City()
+c2 = City(**c1.to_dict())
+c3 = City("hello", "wait", "in")
 
 
-class TestBaseModelpep8(unittest.TestCase):
-    """Validate pep8"""
+class TestCity(unittest.TestCase):
+    """Test cases for the `City` class."""
 
-    def test_pep8(self):
-        """test for base file and test_base file pep8"""
-        style = pep8.StyleGuide(quiet=True)
-        city_pep8 = "models/city.py"
-        test_city_pep8 = "tests/test_models/test_city.py"
-        result = style.check_files([city_pep8, test_city_pep8])
-        self.assertEqual(result.total_errors, 0)
+    def setUp(self):
+        pass
 
+    def tearDown(self) -> None:
+        """Resets FileStorage data."""
+        FileStorage._FileStorage__objects = {}
+        if os.path.exists(FileStorage._FileStorage__file_path):
+            os.remove(FileStorage._FileStorage__file_path)
 
-class TestDocsBaseModel(unittest.TestCase):
-    """test docstrings for base and test_base files"""
+    def test_params(self):
+        """Test method for class attributes"""
+        k = f"{type(c1).__name__}.{c1.id}"
+        self.assertIsInstance(c1.name, str)
+        self.assertEqual(c3.name, "")
+        c1.name = "Abuja"
+        self.assertEqual(c1.name, "Abuja")
 
-    def test_module(self):
-        """check module docstrings"""
-        self.assertTrue(len(city.__doc__) > 0)
+    def test_init(self):
+        """Test method for public instances"""
+        self.assertIsInstance(c1.id, str)
+        self.assertIsInstance(c1.created_at, datetime)
+        self.assertIsInstance(c1.updated_at, datetime)
+        self.assertEqual(c1.updated_at, c2.updated_at)
 
-    def test_class(self):
-        """check class docstrings"""
-        self.assertTrue(len(City.__doc__) > 0)
+    def test_save(self):
+        """Test method for save"""
+        old_update = c1.updated_at
+        c1.save()
+        self.assertNotEqual(c1.updated_at, old_update)
 
-    def test_method(self):
-        """check method docstrings"""
-        for func in dir(City):
-            self.assertTrue(len(func.__doc__) > 0)
+    def test_todict(self):
+        """Test method for dict"""
+        a_dict = c2.to_dict()
+        self.assertIsInstance(a_dict, dict)
+        self.assertEqual(a_dict['__class__'], type(c2).__name__)
+        self.assertIn('created_at', a_dict.keys())
+        self.assertIn('updated_at', a_dict.keys())
+        self.assertNotEqual(c1, c2)
 
 
 if __name__ == "__main__":

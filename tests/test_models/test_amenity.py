@@ -1,39 +1,70 @@
 #!/usr/bin/python3
-"""Unittest for amenity file: class and methods"""
-
-import pep8
+"""Unit tests for the `amenity` module.
+"""
+import os
 import unittest
-from models import amenity
+from models import storage
+from datetime import datetime
 from models.amenity import Amenity
+from models.engine.file_storage import FileStorage
 
 
-class TestBaseModelpep8(unittest.TestCase):
-    """Validate pep8"""
+class TestAmenity(unittest.TestCase):
+    """Test cases for the `Amenity` class."""
 
-    def test_pep8(self):
-        """test for base file and test_base file pep8"""
-        style = pep8.StyleGuide(quiet=True)
-        amen_pep8 = "models/amenity.py"
-        test_amen_pep8 = "tests/test_models/test_amenity.py"
-        result = style.check_files([amen_pep8, test_amen_pep8])
-        self.assertEqual(result.total_errors, 0)
+    def setUp(self):
+        pass
 
+    def tearDown(self) -> None:
+        """Resets FileStorage data."""
+        FileStorage._FileStorage__objects = {}
+        if os.path.exists(FileStorage._FileStorage__file_path):
+            os.remove(FileStorage._FileStorage__file_path)
 
-class TestDocsBaseModel(unittest.TestCase):
-    """test docstrings for base and test_base files"""
+    def test_params(self):
+        """Test method for class attributes"""
 
-    def test_module(self):
-        """check module docstrings"""
-        self.assertTrue(len(amenity.__doc__) > 0)
+        a1 = Amenity()
+        a2 = Amenity(**a1.to_dict())
+        a3 = Amenity("hello", "wait", "in")
 
-    def test_class(self):
-        """check class docstrings"""
-        self.assertTrue(len(Amenity.__doc__) > 0)
+        k = f"{type(a1).__name__}.{a1.id}"
+        self.assertIsInstance(a1.name, str)
+        self.assertIn(k, storage.all())
+        self.assertEqual(a3.name, "")
 
-    def test_method(self):
-        """check method docstrings"""
-        for func in dir(Amenity):
-            self.assertTrue(len(func.__doc__) > 0)
+    def test_init(self):
+        """Test method for public instances"""
+        a1 = Amenity()
+        a2 = Amenity(**a1.to_dict())
+        self.assertIsInstance(a1.id, str)
+        self.assertIsInstance(a1.created_at, datetime)
+        self.assertIsInstance(a1.updated_at, datetime)
+        self.assertEqual(a1.updated_at, a2.updated_at)
+
+    def test_str(self):
+        """Test method for str representation"""
+        a1 = Amenity()
+        string = f"[{type(a1).__name__}] ({a1.id}) {a1.__dict__}"
+        self.assertEqual(a1.__str__(), string)
+
+    def test_save(self):
+        """Test method for save"""
+        a1 = Amenity()
+        old_update = a1.updated_at
+        a1.save()
+        self.assertNotEqual(a1.updated_at, old_update)
+
+    def test_todict(self):
+        """Test method for dict"""
+        a1 = Amenity()
+        a2 = Amenity(**a1.to_dict())
+        a_dict = a2.to_dict()
+        self.assertIsInstance(a_dict, dict)
+        self.assertEqual(a_dict['__class__'], type(a2).__name__)
+        self.assertIn('created_at', a_dict.keys())
+        self.assertIn('updated_at', a_dict.keys())
+        self.assertNotEqual(a1, a2)
 
 
 if __name__ == "__main__":

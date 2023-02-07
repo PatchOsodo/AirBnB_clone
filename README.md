@@ -80,7 +80,7 @@ The commands available for this command interpreter are:
 
 #### Example 1: Using create, count and all commands
 ```
-solid@DESKTOP-6PPFSAT:~/H/AirBnB_clone$ ./console.py
+davisphem@super-machine/~/codes/AirBnB_clone/~main~$ ./console.py
 (hbnb) all
 []
 (hbnb) create Place
@@ -120,14 +120,14 @@ solid@DESKTOP-6PPFSAT:~/H/AirBnB_clone$ ./console.py
 (hbnb) BaseModel.count()
 0
 (hbnb) quit
-solid@DESKTOP-6PPFSAT:~/H/AirBnB_clone$
+davisphem@super-machine/~/codes/AirBnB_clone/~main~$
 ```
 
 ### Non - Interactive Mode ⌨️
 ```
-solid@DESKTOP-6PPFSAT:~/H/AirBnB_clone$ echo "create User" | ./console.py
+davisphem@super-machine/~/codes/AirBnB_clone/~main~$ echo "create User" | ./console.py
 (hbnb) 55b76419-6009-4b36-b88a-7c2930283f4a
-solid@DESKTOP-6PPFSAT:~/H/AirBnB_clone$ echo "show User 55b76419-6009-4b36-b88a-7c2930283f4a" | ./console.py
+davisphem@super-machine/~/codes/AirBnB_clone/~main~$ echo "show User 55b76419-6009-4b36-b88a-7c2930283f4a" | ./console.py
 (hbnb) [User] (55b76419-6009-4b36-b88a-7c2930283f4a) {'id': '55b76419-6009-4b36-b88a-7c2930283f4a', 'created_at': datetime.datetime(2020, 7, 1, 12, 37, 15, 575191), 'updated_at': datetime.datetime(2020, 7, 1, 12, 37, 15, 575237)}
 ```
 
